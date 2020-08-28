@@ -30,6 +30,9 @@ Although it is recommended to always use the latest stable version
 of Java, this project requires a version of Java 11 or higher.
 You can customize this in your compilation settings and `pom.xml`.
 
+For [Maven](https://maven.apache.org/guides/getting-started/maven-in-five-minutes.html),
+you can use your IDE, install it [globally](https://maven.apache.org/download.cgi), 
+or use the supplied `mvnw` or `mvnw.cmd`.
 
 ## Project setup without Docker
 If you are not using Docker for your database, you need 
