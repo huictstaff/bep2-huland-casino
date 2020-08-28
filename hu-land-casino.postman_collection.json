@@ -1,0 +1,212 @@
+{
+	"info": {
+		"_postman_id": "6a26e4fc-eeca-492a-a32a-11b30d6f56cf",
+		"name": "Huland Casino BEP2",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "auth",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/hal+json",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"admin\",\r\n    \"password\": \"admin\",\r\n    \"firstName\": \"Ad\",\r\n    \"lastName\": \"Min\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/register",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "f6aedd51-4d82-41d8-96fc-36c6e8d9370a",
+								"exec": [
+									"if (pm.response.code === 200) {\r",
+									"    const authHeader = pm.response.headers.get(\"Authorization\");\r",
+									"    const token = authHeader.substring(7);\r",
+									"    pm.collectionVariables.set(\"authToken\", token);\r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/hal+json",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"admin\",\r\n    \"password\": \"admin\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/login",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "chips",
+			"item": [
+				{
+					"name": "Show balance",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/chips/balance",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"chips",
+								"balance"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Make deposit",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"amount\": 1000\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/chips/deposit",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"chips",
+								"deposit"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{authToken}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "796eeb1b-7a80-4576-89f6-a82d97b1c08b",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "eb2025b2-6180-449a-85f9-96aeeae9006a",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "ccd36e3f-b09c-411b-af2c-2fab85d24206",
+			"key": "token",
+			"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJodS1iZXAyLWNhc2luby1hcGkiLCJhdWQiOiJodS1iZXAyLWNhc2lubyIsInN1YiI6ImFkbWluIiwiZXhwIjoxNTk5NDc3NzI0LCJyb2wiOlsiUk9MRV9VU0VSIl0sImZpcnN0TmFtZSI6IkFkIiwibGFzdE5hbWUiOiJNaW4ifQ.Pa99y1rO_2uGxxPU1OcGb_ttlUw5GDHklZmxp4b_AUWa7oRhQGPHzi3fQy_rJd7WWvlEu0ZQAG8dk3L8s0-kGA",
+			"disabled": true
+		},
+		{
+			"id": "9d7bedbf-0aab-4a6f-9a00-54bf8b764d62",
+			"key": "authToken",
+			"value": ""
+		}
+	],
+	"protocolProfileBehavior": {}
+}
