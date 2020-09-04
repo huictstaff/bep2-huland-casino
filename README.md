@@ -47,6 +47,11 @@ CREATE USER "bep2-huland-casino" WITH CREATEDB PASSWORD 'bep2-huland-casino';
 CREATE DATABASE "bep2-huland-casino" OWNER "bep2-huland-casino";
 ```
 
+> :warning: **Perform this task by executing the SQL query above (do not use a db tool)**  
+>  
+> When executing the raw query above Postgres will assume that the user is able to login.  
+> Other DB tools may not have the same behaviour by default, which may cause issues logging in.
+
 You can change these names if you like, but keep in mind
 that you need to also change them in our application configuration
 in `src/resources/application.properties`.
