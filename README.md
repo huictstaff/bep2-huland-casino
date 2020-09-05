@@ -41,9 +41,15 @@ For the application to work, we need the correct user and database
 to be created. In PostgreSQL, create the user `bep2-huland-casino`
 with the password `bep2-huland-casino` and the database `bep2-huland-casino`.
 
-This can be done with the following SQL-queries (mind the quotation marks):
+This can be done with the following SQL-queries (mind the quotation marks).
+
+To create a new user (with the same username/password):
 ```postgresql
 CREATE USER "bep2-huland-casino" WITH CREATEDB PASSWORD 'bep2-huland-casino';
+```
+
+To create the database and make the previously created user its owner:
+```postgresql
 CREATE DATABASE "bep2-huland-casino" OWNER "bep2-huland-casino";
 ```
 
@@ -73,6 +79,9 @@ Docker will then start a PostgreSQL image with
 the configuration stated in the `docker-compose.yml`
 and in `development/db`.
 
+If something goes wrong starting docker-compose, and you
+wish to rebuild your image, do so with `docker-compose up --build -V`.
+
 This creates an admin user with the username and password `admin`
 and `admin` and a user, password and database for the application,
 all called `bep2-huland-casino`.
@@ -101,10 +110,10 @@ class. Alternatively, run `mvn spring-boot:start`.
 
 
 ## Using Postman
-[Postman](https://www.postman.com/) 
+The [Postman HTTP client](https://www.postman.com/product/rest-client/) 
 can be used as an HTTP client for doing
 requests to backend APIs like the one we are building.
-Use and extend the collection in this repository
+Import, use and extend the collection in this repository
 found in `hu-land-casino.postman_collection.json`.
 
 ### Automatic authentication and authorisation
@@ -122,7 +131,8 @@ Its general configuration is found in `nl.hu.bep2.casino.SecurityConfig`.
 Authentication is configured in `...presentation.filter.JwtAuthenticationFilter`,
 while Authorization is handled `...presentation.filter.JwtAuthorizationFilter`.
 
-
+> :warning: The following is already handled by the imported Postman
+> collection!
 
 ### Registration
 Users can be registered via the API. 
@@ -161,4 +171,15 @@ JWT token is found as a Bearer token in the
 Authorization header of the response.
 
 Copy this exact header in subsequent requests in order to remain logged in!
-Note that the supplied Postman collection does this automatically.
+Note that the supplied Postman collection does this automatically!
+
+## Component overview
+Two components, *security* and *chips*, has already been created.
+Students will have to make a new component, *blackjack*.
+Keep in mind that the blackjack component will start with
+an object-oriented domain layer. 
+Other layers will be added as development (and learning) progresses.
+
+It is a good idea to create a package structure that reflects
+the application architecture.
+![Packages for BEP2](docs/bep2-packages-small.png)
