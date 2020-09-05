@@ -3,7 +3,7 @@ services:
   db:
     build: development/db
     ports:
-      - "5432:5432"
+      - "15432:5432"
     environment:
       - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=admin
