@@ -1,8 +1,7 @@
 package nl.hu.bep2.casino.chips.presentation;
 
 import nl.hu.bep2.casino.chips.application.ChipsService;
-import nl.hu.bep2.casino.chips.domain.Chips;
-import nl.hu.bep2.casino.chips.domain.exception.NoNegativeDepositException;
+import nl.hu.bep2.casino.chips.domain.exception.NegativeNumberException;
 import nl.hu.bep2.casino.chips.domain.exception.NotEnoughChipsException;
 import nl.hu.bep2.casino.chips.domain.Balance;
 import nl.hu.bep2.casino.chips.presentation.dto.Deposit;
@@ -38,7 +37,7 @@ public class ChipsController {
         try {
             Balance balance = this.service.depositChips(profile.getUsername(), deposit.amount);
             return balance;
-        } catch (NoNegativeDepositException exception) {
+        } catch (NegativeNumberException exception) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, exception.getMessage());
         }
 
