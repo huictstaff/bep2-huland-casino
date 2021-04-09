@@ -1,8 +1,8 @@
 package nl.hu.bep2.casino.chips.application;
 
+import nl.hu.bep2.casino.chips.data.SpringChipsRepository;
 import nl.hu.bep2.casino.chips.domain.Balance;
 import nl.hu.bep2.casino.chips.domain.Chips;
-import nl.hu.bep2.casino.chips.data.SpringChipsRepository;
 import nl.hu.bep2.casino.security.application.UserService;
 import nl.hu.bep2.casino.security.domain.User;
 import org.springframework.stereotype.Service;
@@ -24,6 +24,7 @@ public class ChipsService {
         Chips chips = this.findChipsByUsername(username);
         return chips.showBalance();
     }
+
     /**
      * Deposits any amount of chips.
      * In a real world scenario, you would send the

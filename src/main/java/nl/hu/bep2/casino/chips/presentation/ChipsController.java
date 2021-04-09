@@ -1,9 +1,9 @@
 package nl.hu.bep2.casino.chips.presentation;
 
 import nl.hu.bep2.casino.chips.application.ChipsService;
+import nl.hu.bep2.casino.chips.domain.Balance;
 import nl.hu.bep2.casino.chips.domain.exception.NegativeNumberException;
 import nl.hu.bep2.casino.chips.domain.exception.NotEnoughChipsException;
-import nl.hu.bep2.casino.chips.domain.Balance;
 import nl.hu.bep2.casino.chips.presentation.dto.Deposit;
 import nl.hu.bep2.casino.chips.presentation.dto.Withdrawal;
 import nl.hu.bep2.casino.security.domain.UserProfile;
@@ -40,9 +40,8 @@ public class ChipsController {
         } catch (NegativeNumberException exception) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, exception.getMessage());
         }
-
     }
-;
+
     @PostMapping("/withdraw")
     public Balance withdraw(Authentication authentication, @Validated @RequestBody Withdrawal withdrawal) {
         UserProfile profile = (UserProfile) authentication.getPrincipal();

@@ -28,7 +28,9 @@ public class Chips {
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastUpdate;
 
-    public Chips() {}
+    public Chips() {
+    }
+
     public Chips(User user, Long amount) {
         this.user = user;
         this.amount = amount;
