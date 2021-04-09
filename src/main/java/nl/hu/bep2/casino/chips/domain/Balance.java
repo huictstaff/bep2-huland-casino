@@ -1,4 +1,4 @@
-package nl.hu.bep2.casino.chips.presentation.dto;
+package nl.hu.bep2.casino.chips.domain;
 
 import java.util.Date;
 

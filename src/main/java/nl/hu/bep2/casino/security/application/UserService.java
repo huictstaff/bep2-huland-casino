@@ -1,8 +1,8 @@
 package nl.hu.bep2.casino.security.application;
 
-import nl.hu.bep2.casino.chips.data.Chips;
+import nl.hu.bep2.casino.chips.domain.Chips;
 import nl.hu.bep2.casino.chips.data.SpringChipsRepository;
-import nl.hu.bep2.casino.security.data.User;
+import nl.hu.bep2.casino.security.domain.User;
 import nl.hu.bep2.casino.security.data.SpringUserRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetailsService;

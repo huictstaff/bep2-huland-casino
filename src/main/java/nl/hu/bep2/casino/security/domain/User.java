@@ -1,4 +1,4 @@
-package nl.hu.bep2.casino.security.data;
+package nl.hu.bep2.casino.security.domain;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -8,22 +8,12 @@ import javax.persistence.*;
 import java.util.Collection;
 import java.util.List;
 
-/**
- * This is a data model.
- *
- * It is similar to a domain model, but is
- * intended for storage purposes. It does not
- * contain a lot of business logic.
- *
- * It implements UserDetails in order to make it usable
- * as login/registration model for Spring.
- */
 @Entity
 @Table(name = "users")
 public class User implements UserDetails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue
     private Long id;
 
     @Column(nullable = false, unique = true)
