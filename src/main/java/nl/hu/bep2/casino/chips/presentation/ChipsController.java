@@ -2,6 +2,7 @@ package nl.hu.bep2.casino.chips.presentation;
 
 import nl.hu.bep2.casino.chips.application.ChipsService;
 import nl.hu.bep2.casino.chips.domain.Chips;
+import nl.hu.bep2.casino.chips.domain.exception.NoNegativeDepositException;
 import nl.hu.bep2.casino.chips.domain.exception.NotEnoughChipsException;
 import nl.hu.bep2.casino.chips.domain.Balance;
 import nl.hu.bep2.casino.chips.presentation.dto.Deposit;
@@ -34,7 +35,13 @@ public class ChipsController {
     public Balance deposit(Authentication authentication, @Validated @RequestBody Deposit deposit) {
         UserProfile profile = (UserProfile) authentication.getPrincipal();
 
-        return this.service.depositChips(profile.getUsername(), deposit.amount);
+        try {
+            Balance balance = this.service.depositChips(profile.getUsername(), deposit.amount);
+            return balance;
+        } catch (NoNegativeDepositException exception) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, exception.getMessage());
+        }
+
     }
 ;
     @PostMapping("/withdraw")
@@ -45,7 +52,7 @@ public class ChipsController {
             Balance balance = this.service.withdrawChips(profile.getUsername(), withdrawal.amount);
             return balance;
         } catch (NotEnoughChipsException exception) {
-            throw new ResponseStatusException(HttpStatus.PAYMENT_REQUIRED);
+            throw new ResponseStatusException(HttpStatus.PAYMENT_REQUIRED, exception.getMessage());
         }
     }
 }

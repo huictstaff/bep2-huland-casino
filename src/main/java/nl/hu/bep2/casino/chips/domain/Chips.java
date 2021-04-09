@@ -1,5 +1,6 @@
 package nl.hu.bep2.casino.chips.domain;
 
+import nl.hu.bep2.casino.chips.domain.exception.NoNegativeDepositException;
 import nl.hu.bep2.casino.chips.domain.exception.NotEnoughChipsException;
 import nl.hu.bep2.casino.security.domain.User;
 import org.hibernate.annotations.CreationTimestamp;
@@ -50,7 +51,11 @@ public class Chips {
     }
 
     public void deposit(Long amountToDeposit) {
-        this.amount += amountToDeposit;
+        if (amountToDeposit < 0) {
+            throw new NoNegativeDepositException("Received negative deposit amount: " + amountToDeposit);
+        }
+
+        this.amount = this.amount - amountToDeposit;
     }
 
     public Balance showBalance() {
@@ -59,20 +64,5 @@ public class Chips {
                 this.lastUpdate,
                 this.amount
         );
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public Long getAmount() {
-        return amount;
-    }
-
-    public Date getCreationDate() {
-        return creationDate;
-    }
-    public Date getLastUpdate() {
-        return lastUpdate;
     }
 }
