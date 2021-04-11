@@ -1,9 +1,9 @@
 package nl.hu.bep2.casino.security.application;
 
-import nl.hu.bep2.casino.chips.data.Chips;
 import nl.hu.bep2.casino.chips.data.SpringChipsRepository;
-import nl.hu.bep2.casino.security.data.User;
+import nl.hu.bep2.casino.chips.domain.Chips;
 import nl.hu.bep2.casino.security.data.SpringUserRepository;
+import nl.hu.bep2.casino.security.domain.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -13,9 +13,9 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 
 /**
- *  Implements UserDetailsService in order to make it usable
- *  as login/registration service for Spring.
- *  (see AuthenticationFilter)
+ * Implements UserDetailsService in order to make it usable
+ * as login/registration service for Spring.
+ * (see AuthenticationFilter)
  */
 @Service
 @Transactional

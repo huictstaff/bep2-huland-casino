@@ -1,8 +1,11 @@
 package nl.hu.bep2.casino.security.presentation.filter;
 
 
-import io.jsonwebtoken.*;
-import nl.hu.bep2.casino.security.data.UserProfile;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.JwtParser;
+import io.jsonwebtoken.Jwts;
+import nl.hu.bep2.casino.security.domain.UserProfile;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;

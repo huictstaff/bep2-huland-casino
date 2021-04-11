@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import nl.hu.bep2.casino.security.data.User;
+import nl.hu.bep2.casino.security.domain.User;
 import nl.hu.bep2.casino.security.presentation.dto.Login;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,7 +15,6 @@ import org.springframework.security.web.authentication.AbstractAuthenticationPro
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -53,7 +52,7 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
-        throws AuthenticationException, IOException, ServletException {
+            throws AuthenticationException, IOException {
         Login login = new ObjectMapper()
                 .readValue(request.getInputStream(), Login.class);
 
@@ -77,8 +76,8 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
         String token = Jwts.builder()
                 .signWith(Keys.hmacShaKeyFor(signingKey), SignatureAlgorithm.HS512)
                 .setHeaderParam("typ", "JWT")
-                .setIssuer("hu-bep2-casino-api")
-                .setAudience("hu-bep2-casino")
+                .setIssuer("huland-casino-api")
+                .setAudience("huland-casino")
                 .setSubject(user.getUsername())
                 .setExpiration(new Date(System.currentTimeMillis() + this.expirationInMs))
                 .claim("rol", roles)

@@ -1,7 +1,6 @@
 package nl.hu.bep2.casino.security.presentation.controller;
 
 import nl.hu.bep2.casino.security.application.UserService;
-import nl.hu.bep2.casino.security.data.User;
 import nl.hu.bep2.casino.security.presentation.dto.Registration;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
