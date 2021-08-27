@@ -1,4 +1,4 @@
-package nl.hu.bep2.casino.chips.domain;
+package nl.hu.bep2.casino.chips.application;
 
 import java.util.Date;
 

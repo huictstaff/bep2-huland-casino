@@ -2,7 +2,6 @@ package nl.hu.bep2.casino.chips.domain;
 
 import nl.hu.bep2.casino.chips.domain.exception.NegativeNumberException;
 import nl.hu.bep2.casino.chips.domain.exception.NotEnoughChipsException;
-import nl.hu.bep2.casino.security.domain.User;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -12,11 +11,10 @@ import java.util.Date;
 @Entity
 public class Chips {
     @Id
+    @GeneratedValue
     private Long id;
 
-    @OneToOne
-    @MapsId
-    private User user;
+    private String username;
 
     private Long amount;
 
@@ -31,8 +29,8 @@ public class Chips {
     public Chips() {
     }
 
-    public Chips(User user, Long amount) {
-        this.user = user;
+    public Chips(String username, Long amount) {
+        this.username = username;
         this.amount = amount;
     }
 
@@ -61,14 +59,18 @@ public class Chips {
             throw new NegativeNumberException("Cannot deposit a negative amount: " + amountToDeposit);
         }
 
-        this.amount = this.amount - amountToDeposit;
+        this.amount = this.amount + amountToDeposit;
     }
 
-    public Balance showBalance() {
-        return new Balance(
-                this.user.getUsername(),
-                this.lastUpdate,
-                this.amount
-        );
+    public String getUsername() {
+        return username;
+    }
+
+    public Long getAmount() {
+        return amount;
+    }
+
+    public Date getLastUpdate() {
+        return lastUpdate;
     }
 }

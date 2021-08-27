@@ -7,8 +7,9 @@ import java.util.Optional;
 
 /**
  * This is a magic interface, which is automatically implemented
- * by Spring based on the chosen data storage configuration.
+ * by Spring based on the chosen data storage configuration
+ * when the application is started.
  */
-public interface SpringUserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByUsername(String username);
 }

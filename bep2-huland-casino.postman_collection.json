@@ -158,7 +158,7 @@
 					"response": []
 				},
 				{
-					"name": "Withdraw chips (for development)",
+					"name": "Make withdrawal (for development)",
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -172,7 +172,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/chips/withdraw",
+							"raw": "http://localhost:8080/chips/withdrawal",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -180,7 +180,7 @@
 							"port": "8080",
 							"path": [
 								"chips",
-								"withdraw"
+								"withdrawal"
 							]
 						}
 					},

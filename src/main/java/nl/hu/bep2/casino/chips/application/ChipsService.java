@@ -1,10 +1,7 @@
 package nl.hu.bep2.casino.chips.application;
 
-import nl.hu.bep2.casino.chips.data.SpringChipsRepository;
-import nl.hu.bep2.casino.chips.domain.Balance;
+import nl.hu.bep2.casino.chips.data.ChipsRepository;
 import nl.hu.bep2.casino.chips.domain.Chips;
-import nl.hu.bep2.casino.security.application.UserService;
-import nl.hu.bep2.casino.security.domain.User;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -12,31 +9,24 @@ import javax.transaction.Transactional;
 @Transactional
 @Service
 public class ChipsService {
-    private final UserService userService;
-    private final SpringChipsRepository chipsRepository;
+    private final ChipsRepository chipsRepository;
 
-    public ChipsService(UserService userService, SpringChipsRepository chipsRepository) {
-        this.userService = userService;
+    public ChipsService(ChipsRepository chipsRepository) {
         this.chipsRepository = chipsRepository;
     }
 
     public Balance findBalance(String username) {
         Chips chips = this.findChipsByUsername(username);
-        return chips.showBalance();
+        return this.showBalanceFor(chips);
     }
 
-    /**
-     * Deposits any amount of chips.
-     * In a real world scenario, you would send the
-     * user through a payment gateway before adding the amount.
-     */
     public Balance depositChips(String username, Long amount) {
         Chips chips = this.findChipsByUsername(username);
 
         chips.deposit(amount);
         this.chipsRepository.save(chips);
 
-        return chips.showBalance();
+        return this.showBalanceFor(chips);
     }
 
     public Balance withdrawChips(String username, Long amount) {
@@ -45,14 +35,20 @@ public class ChipsService {
         chips.withdraw(amount);
         this.chipsRepository.save(chips);
 
-        return chips.showBalance();
+        return this.showBalanceFor(chips);
     }
 
     public Chips findChipsByUsername(String username) {
-        User user = this.userService.loadUserByUsername(username);
-
         return this.chipsRepository
-                .findByUser(user)
-                .orElse(new Chips(user, 0L));
+                .findByUsername(username)
+                .orElse(new Chips(username, 0L));
+    }
+
+    private Balance showBalanceFor(Chips chips) {
+        return new Balance(
+                chips.getUsername(),
+                chips.getLastUpdate(),
+                chips.getAmount()
+        );
     }
 }
