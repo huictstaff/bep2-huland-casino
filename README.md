@@ -17,14 +17,6 @@ chip functionality (`nl.hu.bep2.casino.chips`)
 * A container-based development environment for PostgreSQL 
 (see: `development/db/Dockerfile` and `docker-compose.yml`)
 
-Note that the two supporting components are *data-driven*
-rather than *domain-driven*; they lack a domain layer. 
-For your assignment, you should create a new package 
-for your game and create layers within that package. 
-It's recommended to add a *domain layer* 
-for proper object orientation.
-
-
 ## Prerequisites
 Although it is recommended to always use the latest stable version
 of Java, this project requires a version of Java 11 or higher.
@@ -90,17 +82,21 @@ all called `bep2-huland-casino`.
 ### Troubleshooting Docker
 If you already have PostgreSQL running in the background
 and you don't want to stop that process, 
-you will have to change the port-binding from `5432:5432` 
-to something else, for instance `15432:5432` in `docker-compose.yml`
-and in `src/resources/application.properties`.
+you will have to change the port-binding from `15432:5432` 
+to something else, for instance `25432:5432` in `docker-compose.yml`
+and in `src/resources/application.properties`. Don't forget to 
+change this in your development environment's database client as well.
 
 If data does not seem to be persisted when restarting the
 database, make sure Docker has a volume assigned to it.
 Add the project's directory or parent directory 
-under `Settings > Resources > File Sharing`.
+under Docker's `Settings > Resources > File Sharing`.
 
 If you cannot seem to connect to the database,
 make sure Docker is allowed to use the host's network.
+
+If all else fails, setup your database manually according 
+to the steps explained above. Remember: it is OK to ask for help!
 
 ## Booting
 First, make sure the database is set up, started and reachable.
@@ -174,7 +170,7 @@ Copy this exact header in subsequent requests in order to remain logged in!
 Note that the supplied Postman collection does this automatically!
 
 ## Component overview
-Two components, *security* and *chips*, has already been created.
+Two components, *security* and *chips*, have already been created.
 Students will have to make a new component, *blackjack*.
 Keep in mind that the blackjack component will start with
 an object-oriented domain layer. 
@@ -182,4 +178,4 @@ Other layers will be added as development (and learning) progresses.
 
 It is a good idea to create a package structure that reflects
 the application architecture.
-![Packages for BEP2](docs/bep2-packages-small.png)
+![Packages for BEP2](docs/bep2-updated-packages.png)
