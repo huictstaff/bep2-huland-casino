@@ -4,7 +4,7 @@ import nl.hu.bep2.casino.chips.data.ChipsRepository;
 import nl.hu.bep2.casino.chips.domain.Chips;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;;
 
 @Transactional
 @Service

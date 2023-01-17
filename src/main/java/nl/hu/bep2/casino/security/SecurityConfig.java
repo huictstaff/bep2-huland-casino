@@ -1,18 +1,17 @@
 package nl.hu.bep2.casino.security;
 
-import nl.hu.bep2.casino.security.presentation.filter.JwtAuthenticationFilter;
-import nl.hu.bep2.casino.security.presentation.filter.JwtAuthorizationFilter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.SecurityFilterChain;
 
 /**
  * This class configures authentication and authorisation
@@ -29,8 +28,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
  * We don't store passwords, only hashes of passwords.
  */
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(securedEnabled = true)
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+@Configuration
+public class SecurityConfig {
     public final static String LOGIN_PATH = "/login";
     public final static String REGISTER_PATH = "/register";
 
@@ -40,30 +39,30 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Value("${security.jwt.expiration-in-ms}")
     private Integer jwtExpirationInMs;
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
+    @Bean
+    SecurityFilterChain configure(HttpSecurity http) throws Exception {
         http.cors().and()
                 .csrf().disable()
-                .authorizeRequests()
-                .antMatchers(HttpMethod.POST, REGISTER_PATH).permitAll()
-                .antMatchers(HttpMethod.POST, LOGIN_PATH).permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .addFilterBefore(
-                        new JwtAuthenticationFilter(
-                                LOGIN_PATH,
-                                this.jwtSecret,
-                                this.jwtExpirationInMs,
-                                this.authenticationManager()
-                        ),
-                        UsernamePasswordAuthenticationFilter.class
-                )
-                .addFilter(new JwtAuthorizationFilter(this.jwtSecret, this.authenticationManager()))
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                .authorizeHttpRequests((requests) -> {
+                    try {
+                        requests
+                            .requestMatchers(HttpMethod.POST, REGISTER_PATH).permitAll()
+                            .requestMatchers(HttpMethod.POST, LOGIN_PATH).permitAll()
+                            .anyRequest().authenticated()
+                            .and()
 
+                            .sessionManagement()
+                            .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+        return http.build();
     }
-
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
