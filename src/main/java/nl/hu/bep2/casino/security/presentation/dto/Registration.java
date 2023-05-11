@@ -1,7 +1,7 @@
 package nl.hu.bep2.casino.security.presentation.dto;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 public class Registration {
     @NotBlank

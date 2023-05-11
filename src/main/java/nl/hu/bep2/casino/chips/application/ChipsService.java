@@ -1,10 +1,10 @@
 package nl.hu.bep2.casino.chips.application;
 
+import jakarta.transaction.Transactional;
 import nl.hu.bep2.casino.chips.data.ChipsRepository;
 import nl.hu.bep2.casino.chips.domain.Chips;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 
 @Transactional
 @Service
