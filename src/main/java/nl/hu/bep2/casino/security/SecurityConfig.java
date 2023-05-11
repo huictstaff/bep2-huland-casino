@@ -37,8 +37,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true)
 public class SecurityConfig {
-    public final static String LOGIN_PATH = "/login";
-    public final static String REGISTER_PATH = "/register";
+	public static final String LOGIN_PATH = "/login";
+	public static final String REGISTER_PATH = "/register";
 
     @Value("${security.jwt.secret}")
     private String jwtSecret;
