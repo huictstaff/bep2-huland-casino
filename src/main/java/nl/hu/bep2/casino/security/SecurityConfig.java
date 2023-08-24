@@ -8,10 +8,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -48,26 +50,21 @@ public class SecurityConfig {
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
-		http.cors().and()
-		    .csrf().disable()
-		    .authorizeHttpRequests()
-		    .requestMatchers(HttpMethod.POST, REGISTER_PATH).permitAll()
-		    .requestMatchers(HttpMethod.POST, LOGIN_PATH).permitAll()
-		    .anyRequest().authenticated()
-		    .and()
-		    .addFilterBefore(
-				    new JwtAuthenticationFilter(
-						    LOGIN_PATH,
-						    this.jwtSecret,
-						    this.jwtExpirationInMs,
-						    authenticationManager
-				    ),
-				    UsernamePasswordAuthenticationFilter.class
-		    )
-		    .addFilter(new JwtAuthorizationFilter(this.jwtSecret, authenticationManager))
-		    .sessionManagement()
-		    .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-
+	http.cors(Customizer.withDefaults())
+			.csrf(AbstractHttpConfigurer::disable)
+			.authorizeHttpRequests(r-> r.requestMatchers(HttpMethod.POST, REGISTER_PATH).permitAll()
+			.requestMatchers(HttpMethod.POST, LOGIN_PATH).permitAll()
+			.anyRequest().authenticated())
+			.addFilterBefore(new JwtAuthenticationFilter(
+					LOGIN_PATH,
+					this.jwtSecret,
+					this.jwtExpirationInMs,
+					authenticationManager
+			),
+			UsernamePasswordAuthenticationFilter.class
+			)
+			.addFilter(new JwtAuthorizationFilter(this.jwtSecret, authenticationManager))
+			.sessionManagement(c -> c.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 		return http.build();
 	}
 
@@ -76,8 +73,9 @@ public class SecurityConfig {
 		return http.getSharedObject(AuthenticationManagerBuilder.class)
 		           .userDetailsService(userDetailsService)
 		           .passwordEncoder(passwordEncoder)
-		           .and()
-		           .build();
+				.and()
+				.build();
+
 	}
 
     @Bean
