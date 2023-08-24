@@ -25,13 +25,13 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 /**
  * This class configures authentication and authorisation
  * for the application.
- *
+ * <p>
  * The configure method
  * - permits all POSTs to the registration and login endpoints
  * - requires all requests other URLs to be authenticated
  * - sets up JWT-based authentication and authorisation
  * - enforces sessions to be stateless (see: REST)
- *
+ * <p>
  * We make sure user data is securely stored
  * by utilizing a BcryptPasswordEncoder.
  * We don't store passwords, only hashes of passwords.
