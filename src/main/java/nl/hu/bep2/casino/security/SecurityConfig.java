@@ -43,31 +43,30 @@ public class SecurityConfig {
 	public static final String LOGIN_PATH = "/login";
 	public static final String REGISTER_PATH = "/register";
 
-    @Value("${security.jwt.secret}")
-    private String jwtSecret;
+	@Value("${security.jwt.secret}")
+	private String jwtSecret;
 
-    @Value("${security.jwt.expiration-in-ms}")
-    private Integer jwtExpirationInMs;
+	@Value("${security.jwt.expiration-in-ms}")
+	private Integer jwtExpirationInMs;
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
-	http.cors(Customizer.withDefaults())
-			.csrf(AbstractHttpConfigurer::disable)
-			.authorizeHttpRequests(r-> r.requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.POST, REGISTER_PATH)).permitAll()
-					.requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.POST, LOGIN_PATH)).permitAll()
-					.requestMatchers(AntPathRequestMatcher.antMatcher("/error")).anonymous()
-
-					.anyRequest().authenticated())
-			.addFilterBefore(new JwtAuthenticationFilter(
-					LOGIN_PATH,
-					this.jwtSecret,
-					this.jwtExpirationInMs,
-					authenticationManager
-			),
-			UsernamePasswordAuthenticationFilter.class
-			)
-			.addFilter(new JwtAuthorizationFilter(this.jwtSecret, authenticationManager))
-			.sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+		http.cors(Customizer.withDefaults())
+		    .csrf(AbstractHttpConfigurer::disable)
+		    .authorizeHttpRequests(r -> r
+				    .requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.POST, REGISTER_PATH)).permitAll()
+				    .requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.POST, LOGIN_PATH)).permitAll()
+				    .requestMatchers(AntPathRequestMatcher.antMatcher("/error")).anonymous()
+				    .anyRequest().authenticated()
+		    )
+		    .addFilterBefore(new JwtAuthenticationFilter(
+				    LOGIN_PATH,
+				    this.jwtSecret,
+				    this.jwtExpirationInMs,
+				    authenticationManager
+		    ), UsernamePasswordAuthenticationFilter.class)
+		    .addFilter(new JwtAuthorizationFilter(this.jwtSecret, authenticationManager))
+		    .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 		return http.build();
 	}
 
@@ -79,8 +78,8 @@ public class SecurityConfig {
 		return new ProviderManager(provider);
 	}
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
 }
