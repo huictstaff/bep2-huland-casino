@@ -75,7 +75,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         var authorities = ((List<?>) parsedToken.getBody()
                 .get("rol")).stream()
                 .map(authority -> new SimpleGrantedAuthority((String) authority))
-                .collect(Collectors.toList());
+		        .toList();
 
         if (username.isEmpty()) {
             return null;
