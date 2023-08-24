@@ -20,6 +20,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 /**
  * This class configures authentication and authorisation
@@ -52,9 +53,11 @@ public class SecurityConfig {
 	public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
 	http.cors(Customizer.withDefaults())
 			.csrf(AbstractHttpConfigurer::disable)
-			.authorizeHttpRequests(r-> r.requestMatchers(HttpMethod.POST, REGISTER_PATH).permitAll()
-			.requestMatchers(HttpMethod.POST, LOGIN_PATH).permitAll()
-			.anyRequest().authenticated())
+			.authorizeHttpRequests(r-> r.requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.POST, REGISTER_PATH)).permitAll()
+					.requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.POST, LOGIN_PATH)).permitAll()
+					.requestMatchers(AntPathRequestMatcher.antMatcher("/error")).anonymous()
+
+					.anyRequest().authenticated())
 			.addFilterBefore(new JwtAuthenticationFilter(
 					LOGIN_PATH,
 					this.jwtSecret,
@@ -64,7 +67,7 @@ public class SecurityConfig {
 			UsernamePasswordAuthenticationFilter.class
 			)
 			.addFilter(new JwtAuthorizationFilter(this.jwtSecret, authenticationManager))
-			.sessionManagement(c -> c.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+			.sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 		return http.build();
 	}
 
