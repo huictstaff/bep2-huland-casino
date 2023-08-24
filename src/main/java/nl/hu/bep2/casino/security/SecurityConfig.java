@@ -41,17 +41,23 @@ import static org.springframework.security.web.util.matcher.AntPathRequestMatche
 @EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true)
 public class SecurityConfig {
-	public static final String LOGIN_PATH = "/login";
-	public static final String REGISTER_PATH = "/register";
-
+	private static final String LOGIN_PATH = "/login";
+	private static final String REGISTER_PATH = "/register";
+	@Value("${security.jwt.expiration-in-ms}")
+	private Integer jwtExpirationInMs;
 	@Value("${security.jwt.secret}")
 	private String jwtSecret;
 
-	@Value("${security.jwt.expiration-in-ms}")
-	private Integer jwtExpirationInMs;
+	@Bean
+	protected AuthenticationManager authenticationManager(final PasswordEncoder passwordEncoder, final UserDetailsService userDetailsService) {
+		final DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+		provider.setUserDetailsService(userDetailsService);
+		provider.setPasswordEncoder(passwordEncoder);
+		return new ProviderManager(provider);
+	}
 
 	@Bean
-	public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
+	protected SecurityFilterChain filterChain(final HttpSecurity http, final AuthenticationManager authenticationManager) throws Exception {
 		http.cors(Customizer.withDefaults())
 		    .csrf(AbstractHttpConfigurer::disable)
 		    .authorizeHttpRequests(r -> r
@@ -62,25 +68,17 @@ public class SecurityConfig {
 		    )
 		    .addFilterBefore(new JwtAuthenticationFilter(
 				    LOGIN_PATH,
-				    this.jwtSecret,
-				    this.jwtExpirationInMs,
+				    jwtSecret,
+				    jwtExpirationInMs,
 				    authenticationManager
 		    ), UsernamePasswordAuthenticationFilter.class)
-		    .addFilter(new JwtAuthorizationFilter(this.jwtSecret, authenticationManager))
+		    .addFilter(new JwtAuthorizationFilter(jwtSecret, authenticationManager))
 		    .sessionManagement(s -> s.sessionCreationPolicy(STATELESS));
 		return http.build();
 	}
 
 	@Bean
-	public AuthenticationManager authenticationManager(PasswordEncoder passwordEncoder, UserDetailsService userDetailsService) {
-		DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-		provider.setUserDetailsService(userDetailsService);
-		provider.setPasswordEncoder(passwordEncoder);
-		return new ProviderManager(provider);
-	}
-
-	@Bean
-	public PasswordEncoder passwordEncoder() {
+	protected PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
 }
