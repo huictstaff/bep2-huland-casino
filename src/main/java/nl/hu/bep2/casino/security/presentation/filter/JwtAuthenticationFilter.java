@@ -69,7 +69,7 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
         List<String> roles = user.getAuthorities()
                 .stream()
                 .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toList());
+                .toList();
 
         byte[] signingKey = this.secret.getBytes();
 
