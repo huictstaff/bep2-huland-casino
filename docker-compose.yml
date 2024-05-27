@@ -11,14 +11,15 @@
 version: "3.7"
 services:
   db:
-    build: development/db
+    image: postgres
     ports:
+      # This means you can connect to 'localhost:15432' from your computer
+      # and it will patch it through to the container-port 5432
       - "15432:5432"
     environment:
-      - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=admin
-      - DB_APP_NAME=bep2-huland-casino
-      - DB_APP_USER=bep2-huland-casino
-      - DB_APP_PASS=bep2-huland-casino
     volumes:
-      - "./data:/var/data/db"
+      # Required volume: creates the initial db and user
+      - "./development/db:/docker-entrypoint-initdb.d"
+      # Optional volume: saves data between docker runs
+      - "./data:/var/lib/postgresql/data"
