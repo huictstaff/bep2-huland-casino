@@ -26,7 +26,7 @@ public class Chips {
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastUpdate;
 
-    public Chips() {
+    protected Chips() {
     }
 
     public Chips(String username, Long amount) {
