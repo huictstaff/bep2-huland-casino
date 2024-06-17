@@ -18,7 +18,7 @@ chip functionality (`nl.hu.bep2.casino.chips`)
 
 ## Prerequisites
 Although it is recommended to always use the latest stable version
-of Java, this project requires a version of Java 11 or higher.
+of Java, this project requires a version of Java 21 or higher.
 You can customize this in your compilation settings and `pom.xml`.
 
 For [Maven](https://maven.apache.org/guides/getting-started/maven-in-five-minutes.html),
