@@ -33,16 +33,16 @@ you can start the database by executing
 `docker-compose up` from the commandline
 (or `docker-compose start` to run it in the background),
 while the current directory is the root of this project.
-Docker will then start a PostgreSQL image with
-the configuration stated in the `docker-compose.yml`
-and in `development/db`.
+Docker will then start a PostgreSQL container, based on the official PostgreSQL image, with
+the configuration stated in the `docker-compose.yml` and in `development/db`.
 
-If something goes wrong starting docker-compose, and you
-wish to rebuild your image, do so with `docker-compose up --build -V`.
+This creates a container with a database-admin user with the username and password `postgres`/`admin`. These credentials
+can be used for example in a database-administration tool like PGAdmin.
+It also creates a database-user, password and database for the application, all called `bep2-huland-casino`. These credentials
+are not meant to be used manually, but they make sure that our application can only control its own database and not
+(hypothetically) other applications running databases on the same server.
 
-This creates an admin user with the username and password `admin`
-and `admin` and a user, password and database for the application,
-all called `bep2-huland-casino`.
+It does *not* create an application-user. That will happen later when [creating users](#registration) in (for example) Postman.
 
 ### Troubleshooting Docker
 If you already have PostgreSQL running in the background

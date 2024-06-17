@@ -17,6 +17,8 @@ services:
       # and it will patch it through to the container-port 5432
       - "15432:5432"
     environment:
+      # So the database-superuser is called postgres/admin
+      # The account our application will use is configured in init.sql
       - POSTGRES_PASSWORD=admin
     volumes:
       # Required volume: creates the initial db and user
