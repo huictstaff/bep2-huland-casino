@@ -17,6 +17,8 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
+import javax.crypto.SecretKey;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
@@ -24,28 +26,28 @@ import java.util.stream.Collectors;
 
 /**
  * Tries to authenticate a user, based on the incoming request.
- *
+ * <p>
  * Once authenticated, it will return a Bearer token (JWT) set in the
  * Authorization header of the 200 Response.
- *
+ * <p>
  * This exact Bearer has to be added in the Authorization header of subsequent
  * requests to restricted endpoints.
  */
 public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
-    private final String secret;
+    private final SecretKey signingKey;
     private final Integer expirationInMs;
 
     private final AuthenticationManager authenticationManager;
 
     public JwtAuthenticationFilter(
             String path,
-            String secret,
+            SecretKey signingKey,
             Integer expirationInMs,
             AuthenticationManager authenticationManager
     ) {
         super(new AntPathRequestMatcher(path));
 
-        this.secret = secret;
+        this.signingKey = signingKey;
         this.expirationInMs = expirationInMs;
         this.authenticationManager = authenticationManager;
     }
@@ -71,18 +73,16 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
                 .map(GrantedAuthority::getAuthority)
                 .toList();
 
-        byte[] signingKey = this.secret.getBytes();
-
         String token = Jwts.builder()
-                .signWith(Keys.hmacShaKeyFor(signingKey), SignatureAlgorithm.HS512)
-                .setHeaderParam("typ", "JWT")
-                .setIssuer("huland-casino-api")
-                .setAudience("huland-casino")
-                .setSubject(user.getUsername())
-                .setExpiration(new Date(System.currentTimeMillis() + this.expirationInMs))
+                .header().add("typ", "JWT").and()
+                .issuer("huland-casino-api")
+                .audience().add("huland-casino").and()
+                .subject(user.getUsername())
+                .expiration(new Date(System.currentTimeMillis() + this.expirationInMs))
                 .claim("rol", roles)
                 .claim("firstName", user.getFirstName())
                 .claim("lastName", user.getLastName())
+                .signWith(signingKey)
                 .compact();
 
         response.addHeader("Authorization", "Bearer " + token);

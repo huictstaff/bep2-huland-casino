@@ -17,24 +17,25 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
+import javax.crypto.SecretKey;
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Tries to authorize a user, based on the Bearer token (JWT) from
  * the Authorization header of the incoming request.
  */
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
-    private final String secret;
+    private final SecretKey signingKey;
 
     public JwtAuthorizationFilter(
-            String secret,
+            SecretKey secret,
             AuthenticationManager authenticationManager
     ) {
         super(authenticationManager);
 
-        this.secret = secret;
+        this.signingKey = secret;
     }
 
     @Override
@@ -59,20 +60,16 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
             return null;
         }
 
-        byte[] signingKey = this.secret.getBytes();
-
-        JwtParser jwtParser = Jwts.parserBuilder()
-                .setSigningKey(signingKey)
+        JwtParser jwtParser = Jwts.parser()
+                .verifyWith(this.signingKey)
                 .build();
 
-        Jws<Claims> parsedToken = jwtParser
-                .parseClaimsJws(token.replace("Bearer ", ""));
+        Jws<Claims> parsedToken = jwtParser.parseSignedClaims(token.replace("Bearer ", ""));
 
-        var username = parsedToken
-                .getBody()
+        var username = parsedToken.getPayload()
                 .getSubject();
 
-        var authorities = ((List<?>) parsedToken.getBody()
+        var authorities = ((List<?>) parsedToken.getPayload()
                 .get("rol")).stream()
                 .map(authority -> new SimpleGrantedAuthority((String) authority))
 		        .toList();
@@ -83,8 +80,8 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
         UserProfile principal = new UserProfile(
                 username,
-                (String) parsedToken.getBody().get("firstName"),
-                (String) parsedToken.getBody().get("lastName")
+                (String) parsedToken.getPayload().get("firstName"),
+                (String) parsedToken.getPayload().get("lastName")
         );
 
         return new UsernamePasswordAuthenticationToken(principal, null, authorities);

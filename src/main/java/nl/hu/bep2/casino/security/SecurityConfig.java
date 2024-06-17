@@ -1,5 +1,6 @@
 package nl.hu.bep2.casino.security;
 
+import io.jsonwebtoken.security.Keys;
 import nl.hu.bep2.casino.security.presentation.filter.JwtAuthenticationFilter;
 import nl.hu.bep2.casino.security.presentation.filter.JwtAuthorizationFilter;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,6 +19,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import javax.crypto.SecretKey;
 
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
@@ -58,6 +61,8 @@ public class SecurityConfig {
 
 	@Bean
 	protected SecurityFilterChain filterChain(final HttpSecurity http, final AuthenticationManager authenticationManager) throws Exception {
+		SecretKey signingKey = Keys.hmacShaKeyFor(this.jwtSecret.getBytes());
+
 		http.cors(Customizer.withDefaults())
 		    .csrf(AbstractHttpConfigurer::disable)
 		    .authorizeHttpRequests(r -> r
@@ -68,11 +73,11 @@ public class SecurityConfig {
 		    )
 		    .addFilterBefore(new JwtAuthenticationFilter(
 				    LOGIN_PATH,
-				    jwtSecret,
+					signingKey,
 				    jwtExpirationInMs,
 				    authenticationManager
 		    ), UsernamePasswordAuthenticationFilter.class)
-		    .addFilter(new JwtAuthorizationFilter(jwtSecret, authenticationManager))
+		    .addFilter(new JwtAuthorizationFilter(signingKey, authenticationManager))
 		    .sessionManagement(s -> s.sessionCreationPolicy(STATELESS));
 		return http.build();
 	}
