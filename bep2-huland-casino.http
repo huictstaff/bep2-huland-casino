@@ -1,46 +1,9 @@
 # BEP2 HUland Casino
 
 ###
-# group: auth
-# @name Register
-POST localhost:8080/register
-Content-Type: application/json
-
-{
-  "username": "admin",
-  "password": "admin",
-  "firstName": "Ad",
-  "lastName": "Min"
-}
-
-###
-# group: auth
-# @name Login
-POST localhost:8080/login
-#Accept: application/hal+json
-Content-Type: application/json
-
-{
-  "username": "admin",
-  "password": "admin"
-}
-
-> {%
-if (response.status === 200) {
-    console.log("testing");
-    const authHeader = response.headers.valueOf("Authorization");
-    const token = authHeader.substring(7);
-    console.log("Setting token: " + token);
-    client.global.set("authToken", token);
-}
-
-%}
-
-###
 # group: chips
 # @name Show balance
 GET localhost:8080/chips/balance
-Authorization: Bearer {{authToken}}
 
 ###
 # group: chips
