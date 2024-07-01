@@ -33,4 +33,4 @@ build/
 .vscode/
 
 ### Ignore docker data
-data
+/data
