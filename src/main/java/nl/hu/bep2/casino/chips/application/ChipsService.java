@@ -1,18 +1,17 @@
 package nl.hu.bep2.casino.chips.application;
-
-import jakarta.transaction.Transactional;
-import nl.hu.bep2.casino.chips.data.ChipsRepository;
 import nl.hu.bep2.casino.chips.domain.Chips;
-import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 
-@Transactional
-@Service
 public class ChipsService {
-    private final ChipsRepository chipsRepository;
+    private final ArrayList<Chips> chips = new ArrayList<>();
 
-    public ChipsService(ChipsRepository chipsRepository) {
-        this.chipsRepository = chipsRepository;
+    private ChipsService(){
+    }
+
+    private static final ChipsService instance = new ChipsService();
+    public static ChipsService instance(){
+        return instance;
     }
 
     public Balance findBalance(String username) {
@@ -24,8 +23,6 @@ public class ChipsService {
         Chips chips = this.findChipsByUsername(username);
 
         chips.deposit(amount);
-        this.chipsRepository.save(chips);
-
         return this.showBalanceFor(chips);
     }
 
@@ -33,15 +30,19 @@ public class ChipsService {
         Chips chips = this.findChipsByUsername(username);
 
         chips.withdraw(amount);
-        this.chipsRepository.save(chips);
-
         return this.showBalanceFor(chips);
     }
 
     private Chips findChipsByUsername(String username) {
-        return this.chipsRepository
-                .findByUsername(username)
-                .orElse(new Chips(username, 0L));
+        for(Chips c: this.chips){
+            if(c.getUsername().equals(username)){
+                return c;
+            }
+        }
+
+        Chips chipsForUnknownUser = new Chips(username, 0L);
+        this.chips.add(chipsForUnknownUser);
+        return chipsForUnknownUser;
     }
 
     private Balance showBalanceFor(Chips chips) {

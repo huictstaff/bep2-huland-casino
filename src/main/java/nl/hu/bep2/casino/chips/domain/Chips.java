@@ -2,28 +2,17 @@ package nl.hu.bep2.casino.chips.domain;
 
 import nl.hu.bep2.casino.chips.domain.exception.NegativeNumberException;
 import nl.hu.bep2.casino.chips.domain.exception.NotEnoughChipsException;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
-import jakarta.persistence.*;
 import java.util.Date;
 
-@Entity
-public class Chips {
-    @Id
-    @GeneratedValue
-    private Long id;
 
+public class Chips {
     private String username;
 
     private Long amount;
 
-    @CreationTimestamp
-    @Temporal(TemporalType.TIMESTAMP)
     private Date creationDate;
 
-    @UpdateTimestamp
-    @Temporal(TemporalType.TIMESTAMP)
     private Date lastUpdate;
 
     protected Chips() {
