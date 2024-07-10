@@ -8,7 +8,6 @@ import nl.hu.bep2.casino.chips.presentation.dto.Deposit;
 import nl.hu.bep2.casino.chips.presentation.dto.Withdrawal;
 import nl.hu.bep2.casino.security.domain.UserProfile;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;

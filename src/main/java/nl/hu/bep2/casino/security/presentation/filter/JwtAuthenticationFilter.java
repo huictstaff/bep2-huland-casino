@@ -2,8 +2,6 @@ package nl.hu.bep2.casino.security.presentation.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
 import nl.hu.bep2.casino.security.domain.User;
 import nl.hu.bep2.casino.security.presentation.dto.Login;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,7 +20,6 @@ import javax.crypto.SecretKey;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Tries to authenticate a user, based on the incoming request.

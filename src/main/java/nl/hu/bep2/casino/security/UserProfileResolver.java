@@ -15,8 +15,9 @@ public class UserProfileResolver implements HandlerMethodArgumentResolver {
         return parameter.getParameterType().equals(UserProfile.class);
     }
 
+    @SuppressWarnings("UnnecessaryLocalVariable") //Object is too vague, we want the cast to fail for better stacktrace
     @Override
-    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
+    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserProfile profile = (UserProfile) authentication.getPrincipal();
         return profile;

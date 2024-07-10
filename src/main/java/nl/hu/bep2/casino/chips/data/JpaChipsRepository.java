@@ -9,7 +9,7 @@ import java.util.Optional;
 @Component
 public class JpaChipsRepository implements ChipsRepository {
 
-    private EntityManager entities;
+    private final EntityManager entities;
 
     public JpaChipsRepository(EntityManager entities) {
         this.entities = entities;
