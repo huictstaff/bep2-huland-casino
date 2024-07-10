@@ -1,11 +1,10 @@
 package nl.hu.bep2.casino.security.presentation.filter;
 
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.JwtParser;
-import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.*;
 import nl.hu.bep2.casino.security.domain.UserProfile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -28,6 +27,7 @@ import java.util.List;
  */
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     private final SecretKey signingKey;
+    private final Logger logger = LoggerFactory.getLogger(JwtAuthorizationFilter.class);
 
     public JwtAuthorizationFilter(
             SecretKey secret,
@@ -53,37 +53,45 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         String token = request.getHeader("Authorization");
 
         if (token == null || token.isEmpty()) {
+            logger.debug("Authorization header is null or empty");
             return null;
         }
 
         if (!token.startsWith("Bearer ")) {
+            logger.debug("Authorization header does not start with Bearer");
             return null;
         }
 
-        JwtParser jwtParser = Jwts.parser()
-                .verifyWith(this.signingKey)
-                .build();
+        try{
+            JwtParser jwtParser = Jwts.parser()
+                    .verifyWith(this.signingKey)
+                    .build();
 
-        Jws<Claims> parsedToken = jwtParser.parseSignedClaims(token.replace("Bearer ", ""));
+            Jws<Claims> parsedToken = jwtParser.parseSignedClaims(token.replace("Bearer ", ""));
 
-        var username = parsedToken.getPayload()
-                .getSubject();
+            var username = parsedToken.getPayload()
+                    .getSubject();
 
-        var authorities = ((List<?>) parsedToken.getPayload()
-                .get("rol")).stream()
-                .map(authority -> new SimpleGrantedAuthority((String) authority))
-		        .toList();
+            var authorities = ((List<?>) parsedToken.getPayload()
+                    .get("rol")).stream()
+                    .map(authority -> new SimpleGrantedAuthority((String) authority))
+                    .toList();
 
-        if (username.isEmpty()) {
+            if (username.isEmpty()) {
+                return null;
+            }
+
+            UserProfile principal = new UserProfile(
+                    username,
+                    (String) parsedToken.getPayload().get("firstName"),
+                    (String) parsedToken.getPayload().get("lastName")
+            );
+
+            return new UsernamePasswordAuthenticationToken(principal, null, authorities);
+        }catch (MalformedJwtException | SignatureException ex){
+            logger.debug(ex.getMessage());
             return null;
         }
 
-        UserProfile principal = new UserProfile(
-                username,
-                (String) parsedToken.getPayload().get("firstName"),
-                (String) parsedToken.getPayload().get("lastName")
-        );
-
-        return new UsernamePasswordAuthenticationToken(principal, null, authorities);
     }
 }
