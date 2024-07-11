@@ -9,7 +9,6 @@ GET localhost:8080/chips/balance
 # group: chips
 # @name Make deposit (for development)
 POST http://localhost:8080/chips/deposit
-Authorization: Bearer {{authToken}}
 Content-Type: application/json
 
 {
@@ -20,7 +19,6 @@ Content-Type: application/json
 # group: chips
 # @name Make withdrawal (for development)
 POST http://localhost:8080/chips/withdrawal
-Authorization: Bearer {{authToken}}
 Content-Type: application/json
 
 {
