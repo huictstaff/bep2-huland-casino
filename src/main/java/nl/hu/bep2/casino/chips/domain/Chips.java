@@ -73,4 +73,37 @@ public class Chips {
     public Date getLastUpdate() {
         return lastUpdate;
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    //Deze methods worden alleen gebruikt in de SqlChipsRepository, die als 'extra voorbeeldje' is meegeleverd
+    //Deze code kun je dus in principe verwijderen...
+    public static Chips fromDatabaseRow(long id, String username, Long amount, Date creationDate, Date lastUpdate){
+        Chips loadedChips = new Chips();
+        loadedChips.id = id;
+        loadedChips.username = username;
+        loadedChips.amount = amount;
+        loadedChips.creationDate = creationDate;
+        loadedChips.lastUpdate = lastUpdate;
+        return loadedChips;
+    }
+
+    //Deze methods worden alleen gebruikt in de SqlChipsRepository, die als 'extra voorbeeldje' is meegeleverd
+    //Deze code kun je dus in principe verwijderen...
+    public void savedInDb(long newId, Date saveDate){
+        if(this.id != null){
+            throw new IllegalStateException("Cannot set id for Chips " + this.id);
+        }
+        this.id = newId;
+        this.creationDate = saveDate;
+        this.lastUpdate = saveDate;
+    }
+
+    //Deze methods worden alleen gebruikt in de SqlChipsRepository, die als 'extra voorbeeldje' is meegeleverd
+    //Deze code kun je dus in principe verwijderen...
+    public void updatedInDb(Date lastUpdate){
+        this.lastUpdate = lastUpdate;
+    }
 }

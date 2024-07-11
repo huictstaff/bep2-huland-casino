@@ -2,10 +2,14 @@ package nl.hu.bep2.casino.chips.data;
 
 import jakarta.persistence.EntityManager;
 import nl.hu.bep2.casino.chips.domain.Chips;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
+//Deze annotatie zorgt dat deze class gekozen wordt als er ergens een ChipsRepository wordt gevraagd
+//en kan dus weg als je de SqlRepository delete't.
+@Primary
 @Component
 public class JpaChipsRepository implements ChipsRepository {
 
