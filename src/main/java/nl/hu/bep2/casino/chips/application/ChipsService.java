@@ -5,6 +5,8 @@ import nl.hu.bep2.casino.chips.data.ChipsRepository;
 import nl.hu.bep2.casino.chips.domain.Chips;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 
 @Transactional
 @Service
@@ -35,13 +37,16 @@ public class ChipsService {
     }
 
     private Chips findChipsByUsername(String username) {
-        return this.chipsRepository
-                .findByUsername(username)
-                .orElseGet(() ->{
-                    Chips newChips = new Chips(username, 0L);
-                    chipsRepository.save(newChips);
-                    return newChips;
-                });
+        Optional<Chips> maybeChips = this.chipsRepository
+                .findByUsername(username);
+
+        if (maybeChips.isPresent()) {
+            return maybeChips.get();
+        } else {
+            Chips newChips = new Chips(username, 0L);
+            chipsRepository.save(newChips);
+            return newChips;
+        }
     }
 
     private Balance showBalanceFor(Chips chips) {
