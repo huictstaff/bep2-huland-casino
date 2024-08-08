@@ -1,15 +1,11 @@
 package nl.hu.bep2.casino.chips.data;
 
 import nl.hu.bep2.casino.chips.domain.Chips;
-import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-/**
- * This is a magic interface, which is automatically implemented
- * by Spring based on the chosen data storage configuration
- * when the application is started.
- */
-public interface ChipsRepository extends JpaRepository<Chips, Long> {
+public interface ChipsRepository {
     Optional<Chips> findByUsername(String username);
+
+    void save(Chips chips);
 }
