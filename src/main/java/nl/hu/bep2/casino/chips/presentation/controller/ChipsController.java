@@ -1,12 +1,13 @@
 package nl.hu.bep2.casino.chips.presentation.controller;
 
+import nl.hu.bep2.casino.UserProfile;
 import nl.hu.bep2.casino.chips.application.Balance;
 import nl.hu.bep2.casino.chips.application.ChipsService;
 import nl.hu.bep2.casino.chips.domain.exception.NegativeNumberException;
 import nl.hu.bep2.casino.chips.domain.exception.NotEnoughChipsException;
 import nl.hu.bep2.casino.chips.presentation.dto.Deposit;
 import nl.hu.bep2.casino.chips.presentation.dto.Withdrawal;
-import nl.hu.bep2.casino.security.domain.UserProfile;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
