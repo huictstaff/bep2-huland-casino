@@ -13,5 +13,4 @@ public class HardcodedUserConfiguration implements WebMvcConfigurer {
             List<HandlerMethodArgumentResolver> argumentResolvers) {
         argumentResolvers.add(new HardcodedUserResolver());
     }
-
 }
