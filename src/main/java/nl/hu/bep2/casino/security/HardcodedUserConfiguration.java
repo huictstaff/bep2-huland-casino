@@ -1,4 +1,4 @@
-package nl.hu.bep2.casino;
+package nl.hu.bep2.casino.security;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;

@@ -65,8 +65,4 @@ public class Chips {
     public Date getLastUpdate() {
         return lastUpdate;
     }
-
-    public Long getId() {
-        return id;
-    }
 }

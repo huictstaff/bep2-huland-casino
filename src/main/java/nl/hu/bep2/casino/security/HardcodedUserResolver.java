@@ -1,4 +1,4 @@
-package nl.hu.bep2.casino;
+package nl.hu.bep2.casino.security;
 
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
