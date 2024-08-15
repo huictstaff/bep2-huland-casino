@@ -9,12 +9,9 @@ This starter project contains the following:
 * A Maven-based setup with several 
 third-party libraries and frameworks (see: `pom.xml`)
 * A preconfigured Spring project
-* A component for JWT-based 
-user authentication and authorisation (`nl.hu.bep2.casino.security`)
+* A component and some configuration for a hardcoded user (`nl.hu.bep2.casino.security`)
 * A component for basic 
 chip functionality (`nl.hu.bep2.casino.chips`)
-* A container-based development environment for PostgreSQL 
-(see: `development/db/Dockerfile` and `docker-compose.yml`)
 
 ## Prerequisites
 Although it is recommended to always use the latest stable version
@@ -25,155 +22,55 @@ For [Maven](https://maven.apache.org/guides/getting-started/maven-in-five-minute
 you can use your IDE, install it [globally](https://maven.apache.org/download.cgi), 
 or use the supplied `mvnw` or `mvnw.cmd`.
 
-## Project setup with Docker
-Although not supported on every system,
-Development is easiest with [Docker](https://docs.docker.com/desktop/).
-If Docker is installed,
-you can start the database by executing
-`docker-compose up` from the commandline
-(or `docker-compose start` to run it in the background),
-while the current directory is the root of this project.
-Docker will then start a PostgreSQL container, based on the official PostgreSQL image, with
-the configuration stated in the `docker-compose.yml` and in `development/db`.
+## Using the built-in IntelliJ Http-Client
+The `bep2-huland-casino.http` file contains a few demo-requests that demonstrate both
+how the file-format works, and that the example services work at a basic level.
 
-This creates a container with a database-admin user with the username and password `postgres`/`admin`. These credentials
-can be used for example in a database-administration tool like PGAdmin.
-It also creates a database-user, password and database for the application, all called `bep2-huland-casino`. These credentials
-are not meant to be used manually, but they make sure that our application can only control its own database and not
-(hypothetically) other applications running databases on the same server.
+Each HTTP request is basically formatted as it would be 'on the wire', and requests are 
+seperated by 3 ### tokens. 
 
-It does *not* create an application-user. That will happen later when [creating users](#registration) in (for example) Postman.
+If opened in IntelliJ (or VS Code, or another supported IDE), each request can be executed by clicking
+the small 'play'-icon next to it.
 
-### Troubleshooting Docker
-If you already have PostgreSQL running in the background
-and you don't want to stop that process,
-you will have to change the port-binding from `15432:5432`
-to something else, for instance `25432:5432` in `docker-compose.yml`
-and in `src/resources/application.properties`. Don't forget to
-change this in your development environment's database client as well.
-
-If data does not seem to be persisted when restarting the
-database, make sure Docker has a volume assigned to it.
-Add the project's directory or parent directory
-under Docker's `Settings > Resources > File Sharing`.
-
-If you cannot seem to connect to the database,
-make sure Docker is allowed to use the host's network.
-
-If all else fails, setup your database manually according
-to the steps explained above. Remember: it is OK to ask for help!
-
-
-## Project setup without Docker
-If you are not using Docker for your database, you need 
-[PostgreSQL 12](https://www.postgresql.org/) or higher to be installed.
-For the application to work, we need the correct user and database
-to be created. In PostgreSQL, create the user `bep2-huland-casino`
-with the password `bep2-huland-casino` and the database `bep2-huland-casino`.
-
-This can be done with the following SQL-queries (mind the quotation marks).
-
-To create a new user (with the same username/password):
-```postgresql
-CREATE USER "bep2-huland-casino" WITH CREATEDB PASSWORD 'bep2-huland-casino';
-```
-
-To create the database and make the previously created user its owner:
-```postgresql
-CREATE DATABASE "bep2-huland-casino" OWNER "bep2-huland-casino";
-```
-
-> :warning: **Perform this task by executing the SQL query above (do not use a db tool)**  
->  
-> When executing the raw query above Postgres will assume that the user is able to login.  
-> Other DB tools may not have the same behaviour by default, which may cause issues logging in.
-
-You can change these names if you like, but keep in mind
-that you need to also change them in our application configuration
-in `src/resources/application.properties`.
-
-The database interaction is handled by Spring Data.
-Database-specific implementation details are 
-part of another course.
-
-## Booting
-First, make sure the database is set up, started and reachable.
-
-Start the application via your IDE by running the `CasinoApplication`
-class. Alternatively, run `mvn spring-boot:start`.
-
-
-## Using Postman
+## (Deprecated) Using Postman
 The [Postman HTTP client](https://www.postman.com/product/rest-client/) 
 can be used as an HTTP client for doing
 requests to backend APIs like the one we are building.
 Import, use and extend the collection in this repository
 found in `hu-land-casino.postman_collection.json`.
 
+Sadly newer versions of Postman are getting progressively worse and more annoying to use.
+We'll be moving away from Postman in the near future.
+
 ### Automatic authentication and authorisation
-In this collection, Postman has been configured
-to automatically process the Authorization header from
-the login response and add it as a collection variable.
+In this repository, all authentication is handled by the HardCodedUserResolver. Feel free to 
+edit in a different hardcoded user, or a more complicated implementation, 
+or peek at the Full-starter-code to see where this is going.
 
-The collection has been setup to authenticate any
-request using this token.
-
-
-## How do authentication and authorisation work?
-The security component allows users to register and login.
-Its general configuration is found in `nl.hu.bep2.casino.SecurityConfig`.
-Authentication is configured in `...presentation.filter.JwtAuthenticationFilter`,
-while Authorization is handled `...presentation.filter.JwtAuthorizationFilter`.
-
-> :warning: The following is already handled by the imported Postman
-> collection!
-
-### Registration
-Users can be registered via the API. 
-Passwords are [hashed](https://auth0.com/blog/hashing-passwords-one-way-road-to-security/) 
-using a password encoder ([bcrypt](https://en.wikipedia.org/wiki/Bcrypt)),
-so that passwords are not stored in plain-text.
-
-Registration can be done via a POST request to `/register`.
-A body should be supplied with the following JSON 
-(replace values to your liking):
-```json
-{
-    "username": "admin",
-    "password": "admin",
-    "firstName": "Ad",
-    "lastName": "Min"
-}
-```
-
-### Login
-The login is based on 
-[JSON Web Tokens](https://jwt.io/introduction/), 
-offering session-less authorisation.
-
-Login by sending a POST request to `/login`, with
-the following body (replace values to your liking):
-```json
-{
-    "username": "admin",
-    "password": "admin"
-}
-``` 
-
-A `200 OK` is returned upon a successful login. The
-JWT token is found as a Bearer token in the 
-Authorization header of the response.
-
-Copy this exact header in subsequent requests in order to remain logged in!
-Note that the supplied Postman collection does this automatically!
+The main point is that security is a complex and complicated topic, but that in most cases you 
+can defer implementation to a later date without much difficulty.
 
 ## Component overview
 Two components, *security* and *chips*, have already been created.
 Students will have to make a new component, *blackjack*.
 Keep in mind that the blackjack component will start with
-an object-oriented domain layer. 
-Other layers will be added as development (and learning) progresses.
+an object-oriented domain layer.
 
 It is a good idea to create a package structure that reflects
 the application architecture.
 ![Packages for BEP2](docs/bep2-updated-packages.png)
+
+## Continuing from the previous phase
+
+You will likely be able to simply copy the blackjack-component code (and hopefully your JUnit tests) from the previous phase
+into this application. Please make this a separate commit. Any test-code you wrote in the old `public static void main`
+is sadly not so easily migrated, and probably best abandoned (though you may want to investigate a 
+[Spring CommandLineRunner](https://www.baeldung.com/spring-boot-console-app#console-application)).
+
+## Goals
+
+At this stage you should be able to add a Controller to play your game of Blackjack as a web-application. You will
+probably need to add some form of external Id to your Blackjack games, so you can address them with a proper URL.
+
+At this point we are mostly interested in your choice of URLs, and the way you assign functionality to the different layers
+of your program.
